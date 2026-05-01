@@ -24,6 +24,7 @@ put db 42 HASH("FurnaceF")
 put db 43 00
 
 define switch 1773255945
+alias transmitter d0
 
 alias index r0
 alias pHash r1
@@ -32,11 +33,14 @@ alias pState r3
 alias fState r4
 alias packed r5
 alias slot r6
+alias combined r7
+alias bitOffset r8
 
 start:
 move index 0
+move combined 0
 
-room_loop:
+roomLoop:
 # get switch hashes for this room
 add slot index 1
 get pHash db slot
@@ -51,12 +55,14 @@ lbn fState switch fHash Setting 0
 sla fState fState 1
 or  packed pState fState
 
-# write packed value to slot+3
-add slot index 3
-put db slot packed
+# shift into position: bitOffset = (index / 10) * 2 = index / 5
+div bitOffset index 5
+sla packed packed bitOffset
+or  combined combined packed
 
 # next room
 add index index 10
-blt index 50 room_loop
+blt index 50 roomLoop
 
+s transmitter Setting combined
 j start
