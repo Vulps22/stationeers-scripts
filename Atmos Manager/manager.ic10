@@ -1,0 +1,62 @@
+put db 0 HASH("Atrium")
+put db 1 HASH("AtriumP")
+put db 2 HASH("AtriumF")
+put db 3 00
+
+put db 10 HASH("Machine")
+put db 11 HASH("MachineP")
+put db 12 HASH("MachineF")
+put db 13 00
+
+put db 20 HASH("Filtration")
+put db 21 HASH("FiltrationP")
+put db 22 HASH("FiltrationF")
+put db 23 00
+
+put db 30 HASH("Hydroponics")
+put db 31 HASH("HydroponicsP")
+put db 32 HASH("HydroponicsF")
+put db 33 00
+
+put db 40 HASH("Furnace")
+put db 41 HASH("FurnaceP")
+put db 42 HASH("FurnaceF")
+put db 43 00
+
+define switch 1773255945
+
+alias index r0
+alias pHash r1
+alias fHash r2
+alias pState r3
+alias fState r4
+alias packed r5
+alias slot r6
+
+start:
+move index 0
+
+room_loop:
+# get switch hashes for this room
+add slot index 1
+get pHash db slot
+add slot index 2
+get fHash db slot
+
+# read switch states
+lbn pState switch pHash Setting 0
+lbn fState switch fHash Setting 0
+
+# pack into bits
+sla fState fState 1
+or  packed pState fState
+
+# write packed value to slot+3
+add slot index 3
+put db slot packed
+
+# next room
+add index index 10
+blt index 50 room_loop
+
+j start
