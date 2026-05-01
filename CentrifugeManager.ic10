@@ -1,0 +1,29 @@
+clr db
+put db 0 HASH("Centrifuge 1")
+put db 1 HASH("Centrifuge 2")
+
+define centrifuge 690945935
+
+alias index r0
+alias current r1
+alias count r2
+main:
+bgtal index 2 reset
+get current db index
+s db Setting index
+lbn count centrifuge current Reagents 1
+s db Setting count
+bleal count 1 load
+bgeal count 300 unload
+add index index 1
+j main
+unload:
+sbn centrifuge current Open 1
+j ra
+load:
+sbn centrifuge current Open 0
+j ra
+
+reset:
+move index 0
+j ra
