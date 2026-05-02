@@ -4,6 +4,8 @@ define pump -321403609
 
 define targetTemp 303 #temp in kelvin
 
+alias gasManager d0
+
 alias index r0
 alias gasHash r1
 alias temp r2
@@ -15,7 +17,7 @@ yield
 move index 0
 
 gasLoop:
-get gasHash db index
+get gasHash gasManager index
 
 # read pipe temperature
 lbn temp analyzer gasHash Temperature Average
