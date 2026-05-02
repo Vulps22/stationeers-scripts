@@ -1,0 +1,41 @@
+define analyzer 435685051
+define led -2041948072
+define gauge -1252835556
+
+put db 0 HASH("Oxygen*")
+put db 1 HASH("Nitrogen*")
+put db 2 HASH("CO2*")
+put db 3 HASH("Volatiles*")
+put db 4 HASH("Waste*")
+
+define capacity 50000 #KPa -> 50 MPa
+define gases 5
+
+alias index r0
+alias currentGas r1
+alias temp r2
+alias pressure r3
+alias pressureRatio r4
+
+move index 0
+
+start:
+bgeal index gases reset
+get currentGas db index
+lbn pressure analyzer currentGas Pressure Average
+lbn temp analyzer currentGas Temperature Average
+sub temp temp 273.15
+snez r15 pressure
+mul temp temp r15
+div pressureRatio pressure capacity
+sbn led currentGas Mode 4
+sbn led currentGas Setting temp
+sbn gauge currentGas Color 6
+sbn gauge currentGas Setting pressureRatio
+add index index 1
+j start
+
+
+reset:
+move index 0
+j ra
