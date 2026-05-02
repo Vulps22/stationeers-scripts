@@ -1,7 +1,10 @@
 
 define vent -842048328
-define filtrationHash HASH("Filtration")
-define pressureHash HASH("Pressure")
+
+alias transmitter d0
+alias pressureVent d1
+alias filtrationVent d2
+alias sensor d3
 
 define roomId 0          # atrium = 0, furnace = 1, etc
 define targetPressure 75
@@ -21,18 +24,21 @@ mul roomOffset roomId 2
 srl combined combined roomOffset # shift my bits down to position 0
 and myBits combined 3    # mask to just bits 0 and 1
 
+s db Setting combined
+
 and pressure myBits 1    # bit 0
 and filter myBits 2      # bit 1 (non-zero if set)
 
 snez filter filter
-sbn vent filtrationHash On filter
+s filtrationVent On filter
 
 bnez pressure managePressure
-sbn vent pressureHash On 0
+s pressureVent On 0
 j start
 
 managePressure:
-lbn currentPressure vent pressureHash Pressure Average
+l currentPressure sensor Pressure
+s db Setting currentPressure
 slt pressureOnState currentPressure targetPressure
-sbn vent pressureHash On pressureOnState
+s pressureVent On pressureOnState
 j start
