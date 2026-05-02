@@ -1,0 +1,36 @@
+define analyzer 435685051
+define valve -1280984102
+define pump -321403609
+
+define targetTemp 303 #temp in kelvin
+
+alias index r0
+alias gasHash r1
+alias temp r2
+alias tooHot r3
+alias slot r4
+
+start:
+yield
+move index 0
+
+gasLoop:
+get gasHash db index
+
+# read pipe temperature
+lbn temp analyzer gasHash Temperature Average
+
+# tooHot = 1 if temp > target, else 0
+sgt tooHot temp targetTemp
+
+# valve: open if too hot
+sbn valve gasHash On tooHot
+
+# pump: on if NOT too hot (i.e. valve closed)
+seqz r5 tooHot     # r5 = 1 if tooHot == 0
+sbn pump gasHash On r5
+
+add index index 1
+blt index 5 gasLoop  # adjust 5 to however many gases you have
+
+j start
