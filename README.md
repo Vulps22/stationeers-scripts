@@ -20,11 +20,13 @@ Two chips for monitoring and temperature-controlling five gas lines (Oxygen, Nit
 
 ### CentrifugeManager.ic10
 
-Manages two centrifuges by monitoring their reagent counts and automatically opening or closing each centrifuge based on fill level.
+Manages centrifuges by monitoring their reagent counts and automatically opening or closing each one based on fill level. Designed to be scalable — it ships configured for two centrifuges but supports any number.
 
 - Opens a centrifuge (sets `Open 1`) when reagents reach 300 or more, stopping it and making contents accessible for unloading.
 - Closes a centrifuge (sets `Open 0`) when reagents drop to 1 or below, returning it to the operating/processing state.
-- Centrifuges must be named `Centrifuge 1` and `Centrifuge 2` on the logic network.
+- Centrifuges must be named `Centrifuge 1`, `Centrifuge 2`, etc. on the logic network.
+
+**To add more centrifuges:** add a `put db N HASH("Centrifuge N")` line at the top of the script (following the existing pattern), and increase the count on line 11 (`bgtal index 2 reset`) to match the new total.
 
 ## License
 
