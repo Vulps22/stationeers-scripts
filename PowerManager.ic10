@@ -1,0 +1,60 @@
+define batteryHash -400115994
+define analyzerHash 1036015121
+define displayHash -246585138
+define gaugeHash -1399920604
+define buttonHash 1773255945
+define chargeMonitor HASH("Charge")
+define batteryOutMonitor HASH("Using")
+define generatingMonitor HASH("Producing")
+define marginMonitor HASH("Margin")
+put db 0 HASH("Battery 1*")
+put db 1 HASH("Battery 2*")
+define batteryCount 2
+alias generating r2
+alias battOutput r3
+alias margin r6
+alias workingBattery r7
+alias workingCharge r8
+alias workingButton r9
+alias i r10
+sbn displayHash batteryOutMonitor Mode 2
+sbn displayHash generatingMonitor Mode 2
+sbn displayHash marginMonitor Mode 2
+start:
+move battOutput 0
+lb battOutput batteryHash PowerActual Average
+lb generating analyzerHash PowerActual Average
+sub margin generating battOutput
+sbn displayHash generatingMonitor Setting generating
+sbn displayHash batteryOutMonitor Setting battOutput
+sbn displayHash marginMonitor Setting margin
+move i 0
+batteryLoop:
+get workingBattery db i
+lbn workingButton buttonHash workingBattery On Maximum
+seqz workingButton workingButton
+sbn batteryHash workingBattery On workingButton
+lbn workingCharge batteryHash workingBattery Ratio 0
+sbn gaugeHash workingBattery Setting workingCharge
+beqal workingButton 0 setBlue
+bgt workingCharge 0.75 setGreen
+bgt workingCharge 0.50 setYellow
+bgt workingCharge 0.25 setOrange
+sbn gaugeHash workingBattery Color 4
+
+j colorSetted
+setGreen:
+sbn gaugeHash workingBattery Color 2
+j colorSetted
+setYellow:
+sbn gaugeHash workingBattery Color 5
+j colorSetted
+setOrange:
+sbn gaugeHash workingBattery Color 3
+j colorSetted
+setBlue:
+sbn gaugeHash workingBattery Color 0
+colorSetted:
+add i i 1
+blt i batteryCount batteryLoop
+j start
