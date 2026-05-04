@@ -1,16 +1,16 @@
 clr db
-#List of centrifuges
+#List of centrifuges -- Add up to 512
 put db 0 HASH("Centrifuge 1")
 put db 1 HASH("Centrifuge 2")
 
 define centrifuge 690945935
+define centrifugeCount 2 #Update to number of centrifuges above
 
 alias index r0
 alias current r1
 alias count r2
 main:
-#Update number to number of centrifuges
-bgtal index 2 reset
+bgtal index CentrifugeCount reset
 get current db index
 s db Setting index
 lbn count centrifuge current Reagents 1
