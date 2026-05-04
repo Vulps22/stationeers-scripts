@@ -1,4 +1,5 @@
 clr db
+#List of centrifuges
 put db 0 HASH("Centrifuge 1")
 put db 1 HASH("Centrifuge 2")
 
@@ -8,6 +9,7 @@ alias index r0
 alias current r1
 alias count r2
 main:
+#Update number to number of centrifuges
 bgtal index 2 reset
 get current db index
 s db Setting index
