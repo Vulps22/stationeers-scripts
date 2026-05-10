@@ -1,20 +1,27 @@
 clr db
 put db 0 HASH("Centrifuge 1")
 put db 1 HASH("Centrifuge 2")
+put db 2 HASH("Centrifuge 3")
+put db 3 HASH("Centrifuge 4")
+put db 4 HASH("Centrifuge 5")
+put db 5 HASH("Centrifuge 6")
 
 define centrifuge 690945935
+
+define centrifugeCount 6 # MUST equal the number of centrifuges in the stack
+define ejectTarget 100 # Set to the number you with to eject on
 
 alias index r0
 alias current r1
 alias count r2
 main:
-bgtal index 2 reset
+bgeal index centrifugeCount reset
 get current db index
 s db Setting index
 lbn count centrifuge current Reagents 1
 s db Setting count
 bleal count 1 load
-bgeal count 300 unload
+bgeal count ejectTarget unload
 add index index 1
 j main
 unload:
